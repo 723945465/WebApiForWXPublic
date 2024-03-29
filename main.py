@@ -47,8 +47,8 @@ def insert_article(name_of_acc, title, content, url):
         if connection.is_connected():
             cursor = connection.cursor()
             # 创建插入SQL语句
-            query = """insert into hismsg_info (info_source,info_author_name,info_type,info_title,info_content,info_internet_address)
-                       values ('公众号', %s, '公众号推文', %s, %s, %s)"""
+            query = """insert into hismsg_info (info_source,info_author_name,info_type,info_title,info_content,info_internet_address, info_ready_for_analysis)
+                       values ('公众号', %s, '公众号推文', %s, %s, %s, 'yes')"""
             # 执行SQL语句
             cursor.execute(query, (name_of_acc, title, content, url))
             connection.commit()
@@ -129,10 +129,10 @@ def webhook():
             # 如果文章不存在，则继续处理并插入数据
             # 如果正文和图片OCR的整合parse成功，就用整合内容，否则就直接用正文的text
             sql_pass_text_content = SQLStrPass.escape_sql_string(basic_text_content)
-            content_with_pic_parse = WXPublicContentParse.parse_WXPublic_webpage(new_url)
-            if len(content_with_pic_parse)>0:
-                sql_pass_text_content = SQLStrPass.escape_sql_string(content_with_pic_parse)
-                print(content_with_pic_parse)
+            # content_with_pic_parse = WXPublicContentParse.parse_WXPublic_webpage(new_url)
+            # if len(content_with_pic_parse)>0:
+            #     sql_pass_text_content = SQLStrPass.escape_sql_string(content_with_pic_parse)
+            #     print(content_with_pic_parse)
 
             insert_article(name_of_acc,sql_pass_text_title,sql_pass_text_content,new_url)
             insert_tosend_table(name_of_acc,sql_pass_text_title,sql_pass_text_content,new_url)
